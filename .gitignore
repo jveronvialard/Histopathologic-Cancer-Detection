@@ -1,3 +1,7 @@
 data/
+kaggle/
 .idea/
 venv/
+.ipynb_checkpoints/
+__pycache__/
+jupyter_venv.txt
