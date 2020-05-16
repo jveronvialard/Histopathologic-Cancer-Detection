@@ -11,7 +11,7 @@ cwd = os.getcwd().replace("\\", "/")
 
 class PCamDataset(Dataset):
 
-    def __init__(self, csv_file, root_dir=cwd + "/data/"):
+    def __init__(self, csv_file, root_dir=cwd + "/data/", size=None):
         self.root_dir = root_dir
         self.labels = pd.read_csv(root_dir + csv_file)
 
@@ -31,5 +31,6 @@ class PCamDataset(Dataset):
         image = torch.from_numpy(image)
         image = image.type('torch.FloatTensor')
         label = torch.from_numpy(np.array([label]))
+        label = label.type('torch.FloatTensor')
 
         return image, label
