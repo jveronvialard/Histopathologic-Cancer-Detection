@@ -8,12 +8,12 @@ import numpy as np
 
 cwd = os.getcwd().replace("\\", "/")
 
-
 class PCamDataset(Dataset):
 
-    def __init__(self, csv_file, root_dir=cwd + "/data/", size=None):
+    def __init__(self, csv_file, root_dir=cwd + "/data/", transform=None):
         self.root_dir = root_dir
         self.labels = pd.read_csv(root_dir + csv_file)
+        self.transform = transform
 
     def __len__(self):
         return len(self.labels)
@@ -26,11 +26,10 @@ class PCamDataset(Dataset):
             self.root_dir,
             "all/{}.tif".format(csv_name)
         )
-        image = io.imread(img_name)
-        image = image.transpose(2, 0, 1)
-        image = torch.from_numpy(image)
-        image = image.type('torch.FloatTensor')
+        image = io.imread(img_name) # 96, 96, 3
         label = torch.from_numpy(np.array([label]))
         label = label.type('torch.FloatTensor')
-
+        
+        if self.transform is not None:
+            image = self.transform(image) # 3, 96, 96 with transforms.ToTensor()
         return image, label
