@@ -90,7 +90,7 @@ def train_part34(model, optimizer, loader_accuracy, epochs=1, print_every=100):
 train_dataset = PCamDataset(csv_file="train_labels.csv")
 val_dataset = PCamDataset(csv_file="dev_labels.csv")
 
-size = 100
+size = 50
 train_subdataset = torch.utils.data.Subset(dataset=train_dataset, 
                         indices=np.random.choice(
                             a=np.arange(len(train_dataset)), 
@@ -103,7 +103,7 @@ for t, (x, y) in enumerate(train_subdataset):
         count += 1
 print("% of 1: ", count / len(train_subdataset))
 
-batch_size = 100
+batch_size = 50
 loader_train_dataset = train_subdataset
 loader_val_dataset = val_dataset
 
@@ -116,7 +116,7 @@ loader_val = DataLoader(loader_val_dataset,
                         batch_size=batch_size, 
                         shuffle=True)
 
-epochs = 10
+epochs = 30
 learning_rate = 5e-3
 print_every = 10
 
@@ -126,11 +126,15 @@ channel_2 = 48
 
 model = Resnet_Binary_Classifier()
 
-optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+#optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 train_part34(model, optimizer, loader_accuracy=loader_train, epochs=epochs, print_every=print_every)
 
 
+import matplotlib.pyplot as plt
 
-from torchvision import datasets, models, transforms
+model.resnet101.fc.weight.detach().numpy()
+plt.hist(model.resnet101.fc.weight.detach().numpy())
+plt.show()
 

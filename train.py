@@ -7,13 +7,17 @@ import torchvision.transforms as transforms
 import numpy as np
 from utils import PCamDataset
 from resnet_binary_classifier import Resnet_Binary_Classifier
+import os
 
+ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
 BATCH_SIZE = 50
 SIZE_TRAIN_DATASET = 50 # To train on small dataset
 SIZE_VAL_DATASET = 50
 L2_WD = 1e-5
+LR_SCHEDULER_T_MAX = 10
+LR_SCHEDULER_ETA_MIN = 1e-5
 
 USE_GPU = True
 #dtype = torch.float32
@@ -31,8 +35,12 @@ def main():
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225])
     ])    
-    train_dataset = PCamDataset(csv_file="train_labels.csv", transform=data_transform)
-    val_dataset = PCamDataset(csv_file="dev_labels.csv", transform=data_transform)
+    train_dataset = PCamDataset(csv_file="train_labels.csv", 
+                                root_dir=ROOT_DIR+"/data/", 
+                                transform=data_transform)
+    val_dataset = PCamDataset(csv_file="dev_labels.csv", 
+                              root_dir=ROOT_DIR+"/data/", 
+                              transform=data_transform)
     
     if SIZE_TRAIN_DATASET is not None:
         train_dataset = torch.utils.data.Subset(dataset=train_dataset, 
@@ -58,6 +66,9 @@ def main():
     model = Resnet_Binary_Classifier()
     
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WD)
+    #scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, 
+    #                                                 T_max=LR_SCHEDULER_T_MAX, 
+    #                                                 eta_min=LR_SCHEDULER_ETA_MIN)
     
     epoch = 0
     while epoch != NUM_EPOCHS:
@@ -97,6 +108,8 @@ def main():
                 num_samples += preds.size(0) 
             acc = float(num_correct) / num_samples
             print('Got accuracy %f: %d / %d on val set' % (acc, num_correct, num_samples))
+    
+        #scheduler.step()
 
 if __name__ == "__main__":
     main()
