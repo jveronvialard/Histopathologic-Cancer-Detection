@@ -5,14 +5,11 @@ import pandas as pd
 from skimage import io
 import numpy as np
 
-
-cwd = os.getcwd().replace("\\", "/")
-
 class PCamDataset(Dataset):
 
-    def __init__(self, csv_file, root_dir=cwd + "/data/", transform=None):
+    def __init__(self, csv_file, root_dir, transform=None):
         self.root_dir = root_dir
-        self.labels = pd.read_csv(root_dir + csv_file)
+        self.labels = pd.read_csv(root_dir + csv_file).dropna()
         self.transform = transform
 
     def __len__(self):

@@ -13,6 +13,7 @@ NUM_EPOCHS = 30
 BATCH_SIZE = 50
 SIZE_TRAIN_DATASET = 50 # To train on small dataset
 SIZE_VAL_DATASET = 50
+L2_WD = 1e-5
 
 USE_GPU = True
 #dtype = torch.float32
@@ -56,7 +57,7 @@ def main():
     
     model = Resnet_Binary_Classifier()
     
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WD)
     
     epoch = 0
     while epoch != NUM_EPOCHS:
