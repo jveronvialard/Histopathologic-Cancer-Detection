@@ -49,7 +49,7 @@ def main():
     if SIZE_VAL_DATASET is not None:
         val_dataset = torch.utils.data.Subset(dataset=val_dataset, 
                         indices=np.random.choice(
-                            a=np.arange(len(train_dataset)), 
+                            a=np.arange(len(val_dataset)), 
                             size=SIZE_VAL_DATASET, 
                             replace=False))
         
@@ -65,7 +65,7 @@ def main():
     
     X_train = np.zeros((SIZE_TRAIN_DATASET, 2048))
     X_val = np.zeros((SIZE_VAL_DATASET, 2048))
-    y_train = np.zeros((SIZE_TRAIN_DATASET, 1))
+    y_val = np.zeros((SIZE_TRAIN_DATASET, 1))
     y_val = np.zeros((SIZE_VAL_DATASET, 1))
     
     with torch.no_grad():
