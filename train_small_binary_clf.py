@@ -65,7 +65,7 @@ def main():
     
     X_train = np.zeros((SIZE_TRAIN_DATASET, 2048))
     X_val = np.zeros((SIZE_VAL_DATASET, 2048))
-    y_val = np.zeros((SIZE_TRAIN_DATASET, 1))
+    y_train = np.zeros((SIZE_TRAIN_DATASET, 1))
     y_val = np.zeros((SIZE_VAL_DATASET, 1))
     
     with torch.no_grad():
