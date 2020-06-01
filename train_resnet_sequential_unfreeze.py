@@ -116,7 +116,7 @@ def main():
                 # TENSORBOARD
                 # no smoothing: running_loss
                 loss_val  = loss.item()
-                walltime = epoch*train_dataset.__len__() + t*BATCH_SIZE
+                walltime = (epoch-1)*train_dataset.__len__() + t*BATCH_SIZE
                 writer.add_scalar('train/BCE', loss_val, walltime)
                 
                 # Update progress bar
