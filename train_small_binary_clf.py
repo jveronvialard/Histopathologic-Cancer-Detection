@@ -89,6 +89,9 @@ def main():
     
     model = Resnet_to_2048()
     
+    if device.type == 'cuda':
+        model.cuda()
+    
     X_train = np.zeros((SIZE_TRAIN_DATASET, 2048))
     y_train = np.zeros((SIZE_TRAIN_DATASET, 1))
 
@@ -106,8 +109,8 @@ def main():
             x = x.to(device=device)  # move to device, e.g. GPU
             X_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = model(x).numpy()
             y_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = y.to(device=device).numpy()
-            np.save("X_train2.npy", X_train)
-            np.save("y_train2.npy", y_train)
+            np.save("X_train.npy", X_train)
+            np.save("y_train.npy", y_train)
             
         
         for t, (x, y) in enumerate(loader_val):
@@ -115,16 +118,16 @@ def main():
             x = x.to(device=device)  # move to device, e.g. GPU
             X_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = model(x).numpy()
             y_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = y.to(device=device).numpy()
-            np.save("X_val2.npy", X_val)
-            np.save("y_val2.npy", y_val)
+            np.save("X_val.npy", X_val)
+            np.save("y_val.npy", y_val)
             
         for t, (x, y) in enumerate(loader_test):
             print("{}/{} validation examples processed".format(t*BATCH_SIZE, SIZE_TEST_DATASET))
             x = x.to(device=device)  # move to device, e.g. GPU
             X_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = model(x).numpy()
             y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = y.to(device=device).numpy()
-            np.save("X_test2.npy", X_test)
-            np.save("y_test2.npy", y_test)
+            np.save("X_test.npy", X_test)
+            np.save("y_test.npy", y_test)
 
 if __name__ == "__main__":
     main()
