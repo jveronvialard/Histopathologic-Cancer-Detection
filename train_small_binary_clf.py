@@ -107,8 +107,8 @@ def main():
         for t, (x, y) in enumerate(loader_train):
             print("{}/{} training examples processed".format(t*BATCH_SIZE, SIZE_TRAIN_DATASET))
             x = x.to(device=device)  # move to device, e.g. GPU
-            X_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = model(x).numpy()
-            y_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = y.to(device=device).numpy()
+            X_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = model(x).cpu().numpy()
+            y_train[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TRAIN_DATASET), :] = y.numpy()
             np.save("X_train.npy", X_train)
             np.save("y_train.npy", y_train)
             
@@ -116,16 +116,16 @@ def main():
         for t, (x, y) in enumerate(loader_val):
             print("{}/{} validation examples processed".format(t*BATCH_SIZE, SIZE_VAL_DATASET))
             x = x.to(device=device)  # move to device, e.g. GPU
-            X_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = model(x).numpy()
-            y_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = y.to(device=device).numpy()
+            X_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = model(x).cpu().numpy()
+            y_val[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_VAL_DATASET), :] = y.numpy()
             np.save("X_val.npy", X_val)
             np.save("y_val.npy", y_val)
             
         for t, (x, y) in enumerate(loader_test):
             print("{}/{} validation examples processed".format(t*BATCH_SIZE, SIZE_TEST_DATASET))
             x = x.to(device=device)  # move to device, e.g. GPU
-            X_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = model(x).numpy()
-            y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = y.to(device=device).numpy()
+            X_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = model(x).cpu().numpy()
+            y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, SIZE_TEST_DATASET), :] = y.numpy()
             np.save("X_test.npy", X_test)
             np.save("y_test.npy", y_test)
 
