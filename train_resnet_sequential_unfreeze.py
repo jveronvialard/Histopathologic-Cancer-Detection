@@ -125,6 +125,7 @@ def main():
                 # Update progress bar
                 progress_bar.update(BATCH_SIZE)
                 progress_bar.set_postfix(epoch=epoch, loss=loss_val)
+                break # TO REMOVE
             
         print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
@@ -151,8 +152,8 @@ def main():
                 x = x.to(device=device)  # move to device, e.g. GPU
                 y = y.to(device=device)
                 scores = model(x)
-                y_prob[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = F.sigmoid(scores).cpu().numpy()
-                y_val[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = y.cpu().numpy()
+                y_prob[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = F.sigmoid(scores).cpu().numpy().flatten()
+                y_val[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = y.cpu().numpy().flatten()
                 preds = (scores > 0).type(dtype)
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
