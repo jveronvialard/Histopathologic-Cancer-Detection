@@ -76,6 +76,9 @@ def main():
     #model = Resnet_Binary_Classifier()
     model = Resnet_Binary_Classifier_Sequential_Unfreeze()
     
+    if device.type == 'cuda':
+        model.cuda()
+    
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WD)
     #scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, 
     #                                                 T_max=LR_SCHEDULER_T_MAX, 
