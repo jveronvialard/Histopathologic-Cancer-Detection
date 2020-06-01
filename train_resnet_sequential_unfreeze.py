@@ -21,6 +21,10 @@ from torch.utils.tensorboard import SummaryWriter
 
 from tqdm import tqdm
 
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_auc_score
+import matplotlib.pyplot as plt
+
 
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
@@ -86,7 +90,6 @@ def main():
                         batch_size=BATCH_SIZE, 
                         shuffle=True)
     
-    #model = Resnet_Binary_Classifier()
     model = Resnet_Binary_Classifier_Sequential_Unfreeze()
     
     if device.type == 'cuda':
@@ -138,19 +141,45 @@ def main():
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0)
             acc = float(num_correct) / num_samples
-            print('Got accuracy %f: %d / %d on training set' % (acc, num_correct, num_samples))  
+            print('Got accuracy %f: %d / %d on training set' % (acc, num_correct, num_samples))
+                        
             num_correct = 0
             num_samples = 0
-            for x, y in loader_val:
+            y_prob = np.zeros(val_dataset.__len__())
+            y_val = np.zeros(val_dataset.__len__())
+            for t, (x, y) in enumerate(loader_val):
                 x = x.to(device=device)  # move to device, e.g. GPU
                 y = y.to(device=device)
                 scores = model(x)
+                y_prob[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = F.sigmoid(scores)
+                y_val[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = y
                 preds = (scores > 0).type(dtype)
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0) 
             acc = float(num_correct) / num_samples
             print('Got accuracy %f: %d / %d on val set' % (acc, num_correct, num_samples))
+            
+            
+            y_val = y_val.cpu().numpy()
+            y_prob = y_prob.cpu().numpy()
+            fpr, tpr, _ = roc_curve(y_val, y_prob)
+            roc_auc_SVC = auc(fpr, tpr)
+            
+            fig, ax = plt.subplots()
+            lw = 2
+            ax.plot(fpr, tpr, color='darkorange',
+                     lw=lw, label='ROC curve (area = %0.2f)' % roc_auc_SVC)
+            ax.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+            ax.xlim([0.0, 1.0])
+            ax.ylim([0.0, 1.05])
+            ax.set_xlabel('False Positive Rate')
+            ax.set_ylabel('True Positive Rate')
+            ax.set_title('ROC')
+            ax.legend(loc="lower right")
+
+            writer.add_figure("ROC", fig, global_step=epoch)
+            
     
         #scheduler.step()
         
