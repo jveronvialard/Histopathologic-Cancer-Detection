@@ -102,7 +102,7 @@ def main():
                 x = x.to(device=device)  # move to device, e.g. GPU
                 y = y.to(device=device)
                 scores = model(x)
-                 preds = (scores > 0).type(dtype)
+                preds = (scores > 0).type(dtype)
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0)
