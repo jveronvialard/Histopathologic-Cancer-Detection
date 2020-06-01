@@ -19,6 +19,9 @@ import os
 
 from torch.utils.tensorboard import SummaryWriter
 
+from tqdm import tqdm
+
+
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
@@ -77,6 +80,7 @@ def main():
     loader_train = DataLoader(train_dataset, 
                           batch_size=BATCH_SIZE, 
                           shuffle=True)
+
     
     loader_val = DataLoader(val_dataset, 
                         batch_size=BATCH_SIZE, 
@@ -96,22 +100,28 @@ def main():
     epoch = 0
     while epoch != NUM_EPOCHS:
         epoch += 1
-        for t, (x, y) in enumerate(loader_train):
-            x = x.to(device=device)
-            y = y.to(device=device)
-            model.train()
-            scores = model(x)
-            criterion = torch.nn.BCEWithLogitsLoss()
-            loss = criterion(scores, y)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            
-            # TENSORBOARD
-            # no smoothing
-            running_loss  = loss.item()
-            walltime = epoch*len(loader_train) + t*BATCH_SIZE
-            writer.add_scalar('train/BCE', running_loss, walltime)
+        print("Starting epoch {epoch}".format(epoch=epoch))
+        with tqdm(total=train_dataset.__len__()) as progress_bar:
+            for t, (x, y) in enumerate(loader_train):
+                x = x.to(device=device)
+                y = y.to(device=device)
+                model.train()
+                scores = model(x)
+                criterion = torch.nn.BCEWithLogitsLoss()
+                loss = criterion(scores, y)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                # TENSORBOARD
+                # no smoothing: running_loss
+                loss_val  = loss.item()
+                walltime = epoch*train_dataset.__len__() + t*BATCH_SIZE
+                writer.add_scalar('train/BCE', loss_val, walltime)
+                
+                # Update progress bar
+                progress_bar.update(BATCH_SIZE)
+                progress_bar.set_postfix(epoch=epoch, loss=loss_val)
             
         print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
