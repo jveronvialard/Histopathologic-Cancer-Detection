@@ -17,18 +17,27 @@ from utils import PCamDataset
 from resnet_binary_classifier import Resnet_Binary_Classifier, Resnet_Binary_Classifier_Sequential_Unfreeze
 import os
 
+from torch.utils.tensorboard import SummaryWriter
+
+
 ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
-BATCH_SIZE = 50
-SIZE_TRAIN_DATASET = 50 # To train on small dataset
-SIZE_VAL_DATASET = 50
+BATCH_SIZE = 64
+#SIZE_TRAIN_DATASET = 64 # To train on small dataset
+#SIZE_VAL_DATASET = 64
+SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
 L2_WD = 1e-5
 #LR_SCHEDULER_T_MAX = 10
 #LR_SCHEDULER_ETA_MIN = 1e-5
 
+# TENSORBOARD SETUP
+save_dir = "./save/"
+name = "train_resnet_sequential_unfreeze_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+writer = SummaryWriter(save_dir+name)
+
+# DEVICE SETUP
 USE_GPU = True
-#dtype = torch.float32
 
 if USE_GPU and torch.cuda.is_available():
     device = torch.device('cuda')
@@ -97,8 +106,15 @@ def main():
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            
+            # TENSORBOARD
+            # no smoothing
+            running_loss  = loss.item()
+            walltime = epoch*len(loader_train) + t*BATCH_SIZE
+            writer.add_scalar('train/BCE', running_loss, walltime)
+            
         print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
-        
+                
         model.eval() # set model to evaluation mode
         with torch.no_grad():
             num_correct = 0
@@ -127,6 +143,8 @@ def main():
             print('Got accuracy %f: %d / %d on val set' % (acc, num_correct, num_samples))
     
         #scheduler.step()
+        
+
 
 if __name__ == "__main__":
     pass
