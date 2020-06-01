@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun  1 02:10:16 2020
+
+@author: JulienVeronVialard
+"""
+
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -63,8 +71,8 @@ def main():
                         batch_size=BATCH_SIZE, 
                         shuffle=True)
     
-    model = Resnet_Binary_Classifier()
-    #model = Resnet_Binary_Classifier_Sequential_Unfreeze()
+    #model = Resnet_Binary_Classifier()
+    model = Resnet_Binary_Classifier_Sequential_Unfreeze()
     
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WD)
     #scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, 

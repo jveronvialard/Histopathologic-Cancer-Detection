@@ -3,7 +3,7 @@ import torch.nn as nn
 #import torch.optim as optim
 #from torch.utils.data import DataLoader
 #from torch.utils.data import sampler
-import torch.nn.functional as F
+#import torch.nn.functional as F
 import torchvision.models
 
 #import numpy as np
@@ -19,11 +19,11 @@ class Resnet_Binary_Classifier(nn.Module):
             param.requires_grad = False
         self.resnet101.fc = nn.Linear(in_features=2048, out_features=1, bias=True)
 
-
     def forward(self, x):
         x_resized = self.resize_layer(x)
         scores = self.resnet101(x_resized)
         return scores
+    
     
 class Identity(nn.Module):
     def __init__(self):
@@ -46,3 +46,28 @@ class Resnet_to_2048(nn.Module):
         x_resized = self.resize_layer(x)
         x_out = self.resnet101(x_resized)
         return x_out
+    
+    
+class Resnet_Binary_Classifier_Sequential_Unfreeze(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.resize_layer = nn.AdaptiveAvgPool2d((224, 224))
+        self.resnet101 = torchvision.models.resnet101(pretrained=True)
+        # Freeze layers
+        for param in self.resnet101.parameters():
+            param.requires_grad = False
+        for param in self.resnet101.layer4.parameters():
+            param.requires_grad = True
+        self.resnet101.fc = nn.Linear(in_features=2048, out_features=1, bias=True)
+
+    
+    def forward(self, x):
+        x_resized = self.resize_layer(x)
+        scores = self.resnet101(x_resized)
+        return scores
+    
+
+#model = Resnet_Binary_Classifier_Sequential_Unfreeze()
+#for param in model.parameters():
+#    print(param)
+        

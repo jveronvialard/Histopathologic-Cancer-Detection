@@ -6,4 +6,6 @@ venv/
 .ipynb_checkpoints/
 __pycache__/
 jupyter_venv.txt
-.zip
+*.zip
+*.npy
+train_small_svm_clf.py
