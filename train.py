@@ -100,7 +100,7 @@ def main():
                 y = y.to(device=device)
                 scores = model(x)
                 preds = (scores > 0).type(dtype)
-
+                preds = preds.to(device)
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0)
             acc = float(num_correct) / num_samples
