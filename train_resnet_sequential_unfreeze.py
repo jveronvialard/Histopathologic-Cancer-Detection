@@ -141,6 +141,7 @@ def main():
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0)
+                break # TO REMOVE
             acc = float(num_correct) / num_samples
             print('Got accuracy %f: %d / %d on training set' % (acc, num_correct, num_samples))
                         
