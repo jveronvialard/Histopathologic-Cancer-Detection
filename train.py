@@ -78,6 +78,8 @@ def main():
     while epoch != NUM_EPOCHS:
         epoch += 1
         for t, (x, y) in enumerate(loader_train):
+            x = x.to(device=device)
+            y = y.to(device=device)
             model.train()
             scores = model(x)
             criterion = torch.nn.BCEWithLogitsLoss()
