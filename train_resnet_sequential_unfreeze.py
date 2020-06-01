@@ -26,7 +26,7 @@ from tqdm import tqdm
 ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
-BATCH_SIZE = 64
+BATCH_SIZE = 256
 #SIZE_TRAIN_DATASET = 64 # To train on small dataset
 #SIZE_VAL_DATASET = 64
 SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
