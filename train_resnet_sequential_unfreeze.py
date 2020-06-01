@@ -159,6 +159,7 @@ def main():
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
                 num_samples += preds.size(0)
+                break # TO REMOVE
             acc = float(num_correct) / num_samples
             print('Got accuracy %f: %d / %d on val set' % (acc, num_correct, num_samples))
             
@@ -173,8 +174,8 @@ def main():
             ax.plot(fpr, tpr, color='darkorange',
                      lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
             ax.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-            ax.xlim([0.0, 1.0])
-            ax.ylim([0.0, 1.05])
+            ax.set_xlim([0.0, 1.0])
+            ax.set_ylim([0.0, 1.05])
             ax.set_xlabel('False Positive Rate')
             ax.set_ylabel('True Positive Rate')
             ax.set_title('ROC')
