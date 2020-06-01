@@ -151,25 +151,25 @@ def main():
                 x = x.to(device=device)  # move to device, e.g. GPU
                 y = y.to(device=device)
                 scores = model(x)
-                y_prob[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = F.sigmoid(scores)
-                y_val[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = y
+                y_prob[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = F.sigmoid(scores).cpu().numpy()
+                y_val[t*BATCH_SIZE: min((t+1)*BATCH_SIZE, val_dataset.__len__())] = y.cpu().numpy()
                 preds = (scores > 0).type(dtype)
                 preds = preds.to(device)
                 num_correct += (preds==y).sum()
-                num_samples += preds.size(0) 
+                num_samples += preds.size(0)
             acc = float(num_correct) / num_samples
             print('Got accuracy %f: %d / %d on val set' % (acc, num_correct, num_samples))
             
             
-            y_val = y_val.cpu().numpy()
-            y_prob = y_prob.cpu().numpy()
+            y_val = y_val
+            y_prob = y_prob
             fpr, tpr, _ = roc_curve(y_val, y_prob)
-            roc_auc_SVC = auc(fpr, tpr)
+            roc_auc = auc(fpr, tpr)
             
             fig, ax = plt.subplots()
             lw = 2
             ax.plot(fpr, tpr, color='darkorange',
-                     lw=lw, label='ROC curve (area = %0.2f)' % roc_auc_SVC)
+                     lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
             ax.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
             ax.xlim([0.0, 1.0])
             ax.ylim([0.0, 1.05])
