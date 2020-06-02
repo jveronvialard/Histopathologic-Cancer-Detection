@@ -31,8 +31,8 @@ L2_WD = 1e-5
 
 # TENSORBOARD SETUP
 save_dir = "./save/"
-SAVE_MODEL_PATH = save_dir + "train_resnet_sequential_unfreeze_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
-name = "train_resnet_sequential_unfreeze_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+SAVE_MODEL_PATH = save_dir + "train_resnet_linear_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+name = "train_resnet_linear_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
 writer = SummaryWriter(save_dir+name)
 
 # DEVICE SETUP
