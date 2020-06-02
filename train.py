@@ -130,7 +130,7 @@ def main():
                             y = y.to(device=device)
                             scores = model(x)
                             loss = criterion(scores, y)
-                            loss_num += loss.item()
+                            loss_num += x.size(0)*loss.item()
                             loss_den += x.size(0)
                         loss_val = loss_num/loss_den
                         if loss_val < best_val_loss:
