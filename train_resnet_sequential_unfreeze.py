@@ -135,18 +135,21 @@ def main():
                     n_iter = 0
                     model.eval() # set model to evaluation mode
                     with torch.no_grad():
+                        loss_num, loss_den = 0., 0.
                         for t, (x, y) in enumerate(loader_val):
                             x = x.to(device=device)  # move to device, e.g. GPU
                             y = y.to(device=device)
                             scores = model(x)
                             loss = criterion(scores, y)
-                            loss_val  = loss.item()
-                            if loss_val < best_val_loss:
-                                best_val_loss = loss_val
-                                torch.save(model, SAVE_MODEL_PATH)
-                                writer.add_scalar('dev/BCE', loss_val, walltime)
-                                print('Save best model at iteration {}. Dev loss: {}'.format(walltime, best_val_loss))                    
-            
+                            loss_num += loss.item()
+                            loss_den += x.size(0)
+                        loss_val = loss_num/loss_den
+                        if loss_val < best_val_loss:
+                            best_val_loss = loss_val
+                            torch.save(model, SAVE_MODEL_PATH)
+                            writer.add_scalar('dev/BCE', best_val_loss, walltime)
+                            print('Save best model at iteration {}. Dev loss: {}'.format(walltime, best_val_loss))                    
+        
         print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
         model.eval() # set model to evaluation mode
