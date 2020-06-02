@@ -31,6 +31,7 @@ ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
 BATCH_SIZE = 256
+EVALUATE_EVERY= 1000
 #SIZE_TRAIN_DATASET = 64 # To train on small dataset
 #SIZE_VAL_DATASET = 64
 SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
@@ -40,6 +41,7 @@ L2_WD = 1e-5
 
 # TENSORBOARD SETUP
 save_dir = "./save/"
+SAVE_MODEL_PATH = "train_resnet_sequential_unfreeze_best" + + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
 name = "train_resnet_sequential_unfreeze_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
 writer = SummaryWriter(save_dir+name)
 
@@ -101,11 +103,14 @@ def main():
     #                                                 eta_min=LR_SCHEDULER_ETA_MIN)
     
     epoch = 0
+    n_iter = 0
+    best_val_loss = float("inf")
     while epoch != NUM_EPOCHS:
         epoch += 1
         print("Starting epoch {epoch}".format(epoch=epoch))
         with tqdm(total=train_dataset.__len__()) as progress_bar:
             for t, (x, y) in enumerate(loader_train):
+                n_iter += BATCH_SIZE
                 x = x.to(device=device)
                 y = y.to(device=device)
                 model.train()
@@ -125,6 +130,22 @@ def main():
                 # Update progress bar
                 progress_bar.update(BATCH_SIZE)
                 progress_bar.set_postfix(epoch=epoch, loss=loss_val)
+                
+                if n_iter >= EVALUATE_EVERY:
+                    n_iter = 0
+                    model.eval() # set model to evaluation mode
+                    with torch.no_grad():
+                        for t, (x, y) in enumerate(loader_val):
+                            x = x.to(device=device)  # move to device, e.g. GPU
+                            y = y.to(device=device)
+                            scores = model(x)
+                            loss = criterion(scores, y)
+                            loss_val  = loss.item()
+                            if loss_val < best_val_loss:
+                                best_val_loss = loss_val
+                                torch.save(model, SAVE_MODEL_PATH)
+                                writer.add_scalar('dev/BCE', loss_val, walltime)
+                                print('Save best model at iteration {}. Dev loss: {}'.format(walltime, best_val_loss))                    
             
         print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
