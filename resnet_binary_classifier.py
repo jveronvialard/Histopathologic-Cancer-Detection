@@ -67,7 +67,21 @@ class Resnet_Binary_Classifier_Sequential_Unfreeze(nn.Module):
         return scores
     
 
-#model = Resnet_Binary_Classifier_Sequential_Unfreeze()
-#for param in model.parameters():
-#    print(param)
+class Resnet18_Binary_Classifier_Sequential_Unfreeze(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.resize_layer = nn.AdaptiveAvgPool2d((224, 224))
+        self.resnet18 = torchvision.models.resnet18(pretrained=True)
+        # Freeze layers
+        for param in self.resnet18.parameters():
+            param.requires_grad = False
+        for param in self.resnet18.layer4.parameters():
+            param.requires_grad = True
+        self.resnet18.fc = nn.Linear(in_features=512, out_features=1, bias=True)
+
+    
+    def forward(self, x):
+        x_resized = self.resize_layer(x)
+        scores = self.resnet18(x_resized)
+        return scores
         
