@@ -29,18 +29,18 @@ from resnet_binary_classifier import Resnet18_Binary_Classifier_Sequential_Unfre
 ## MODEL NAME
 NAME = "train_resnet18_sequential_unfreeze"
 
-
+    
 ROOT_DIR = os.getcwd().replace("\\", "/")
 
 ## MODEL HYPERPARAMETERS
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
-BATCH_SIZE = 8 #  To train on small dataset
-#BATCH_SIZE = 256
-EVALUATE_EVERY = 4 #  To train on small dataset
-# EVALUATE_EVERY = 50000
-SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 16 #  To train on small dataset
-#SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
+#BATCH_SIZE = 8 #  To train on small dataset
+BATCH_SIZE = 256
+#EVALUATE_EVERY = 4 #  To train on small dataset
+EVALUATE_EVERY = 50000
+#SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 16 #  To train on small dataset
+SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
 L2_WD = 1e-5
 #LR_SCHEDULER_T_MAX = 10
 #LR_SCHEDULER_ETA_MIN = 1e-5
@@ -152,13 +152,12 @@ def main():
                             loss_num += loss.item()
                             loss_den += x.size(0)
                         loss_val = loss_num/loss_den
+                        writer.add_scalar('dev/BCE', loss_val, walltime)
                         if loss_val < best_val_loss:
                             best_val_loss = loss_val
                             torch.save(model, SAVE_MODEL_PATH)
-                            writer.add_scalar('dev/BCE', best_val_loss, walltime)
-                            print('Save best model at iteration {}. Dev loss: {}'.format(walltime, best_val_loss))                    
+                            print('Save best model at iteration {} with dev loss: {}'.format(walltime, best_val_loss))                     
         
-        print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
         model.eval() # set model to evaluation mode
         with torch.no_grad():
@@ -201,7 +200,7 @@ def main():
             fig, ax = plt.subplots()
             lw = 2
             ax.plot(fpr, tpr, color='darkorange',
-                     lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+                     lw=lw, label='ROC curve (area = %0.4f)' % roc_auc)
             ax.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
             ax.set_xlim([0.0, 1.0])
             ax.set_ylim([0.0, 1.05])
