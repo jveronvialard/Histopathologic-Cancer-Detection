@@ -138,9 +138,7 @@ def main():
                             best_val_loss = loss_val
                             torch.save(model, SAVE_MODEL_PATH)
                             print('Save best model at iteration {} with dev loss: {}'.format(walltime, best_val_loss))                    
-        
-        print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
-                
+                        
         model.eval() # set model to evaluation mode
         with torch.no_grad():
             num_correct = 0

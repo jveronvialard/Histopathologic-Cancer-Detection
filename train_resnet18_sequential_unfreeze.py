@@ -152,13 +152,12 @@ def main():
                             loss_num += loss.item()
                             loss_den += x.size(0)
                         loss_val = loss_num/loss_den
+                        writer.add_scalar('dev/BCE', loss_val, walltime)
                         if loss_val < best_val_loss:
                             best_val_loss = loss_val
                             torch.save(model, SAVE_MODEL_PATH)
-                            writer.add_scalar('dev/BCE', best_val_loss, walltime)
-                            print('Save best model at iteration {}. Dev loss: {}'.format(walltime, best_val_loss))                    
+                            print('Save best model at iteration {} with dev loss: {}'.format(walltime, best_val_loss))                     
         
-        print('Epoch %d, loss = %.4f' % (epoch, loss.item()))
                 
         model.eval() # set model to evaluation mode
         with torch.no_grad():
