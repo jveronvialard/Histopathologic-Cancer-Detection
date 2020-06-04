@@ -30,3 +30,4 @@ class PCamDataset(Dataset):
         if self.transform is not None:
             image = self.transform(image) # 3, 96, 96 with transforms.ToTensor()
         return image, label
+
