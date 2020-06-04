@@ -180,7 +180,7 @@ def main():
             fig, ax = plt.subplots()
             lw = 2
             ax.plot(fpr, tpr, color='darkorange',
-                     lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+                     lw=lw, label='ROC curve (area = %0.4f)' % roc_auc)
             ax.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
             ax.set_xlim([0.0, 1.0])
             ax.set_ylim([0.0, 1.05])
