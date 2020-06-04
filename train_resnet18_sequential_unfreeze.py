@@ -35,11 +35,12 @@ ROOT_DIR = os.getcwd().replace("\\", "/")
 ## MODEL HYPERPARAMETERS
 LEARNING_RATE = 5e-3
 NUM_EPOCHS = 30
-#BATCH_SIZE = 8 #  To train on small dataset
-BATCH_SIZE = 256
-EVALUATE_EVERY = 50000
-#SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 16 #  To train on small dataset
-SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
+BATCH_SIZE = 8 #  To train on small dataset
+#BATCH_SIZE = 256
+EVALUATE_EVERY = 4 #  To train on small dataset
+# EVALUATE_EVERY = 50000
+SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 16 #  To train on small dataset
+#SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
 L2_WD = 1e-5
 #LR_SCHEDULER_T_MAX = 10
 #LR_SCHEDULER_ETA_MIN = 1e-5
@@ -114,12 +115,13 @@ def main():
     while epoch != NUM_EPOCHS:
         epoch += 1
         print("Starting epoch {epoch}".format(epoch=epoch))
+        model.train() #  set model to training mode
         with tqdm(total=train_dataset.__len__()) as progress_bar:
             for t, (x, y) in enumerate(loader_train):
                 n_iter += BATCH_SIZE
                 x = x.to(device=device)
                 y = y.to(device=device)
-                model.train()
+                
                 scores = model(x)
                 criterion = torch.nn.BCEWithLogitsLoss()
                 loss = criterion(scores, y)
