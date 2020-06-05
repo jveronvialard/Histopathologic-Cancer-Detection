@@ -29,7 +29,7 @@ from resnet_binary_classifier import Resnet18_Binary_Classifier_Sequential_Unfre
 ## MODEL NAME
 NAME = "train_resnet18_sequential_unfreeze"
 
-    
+
 ROOT_DIR = os.getcwd().replace("\\", "/")
 
 ## MODEL HYPERPARAMETERS
@@ -86,7 +86,7 @@ def main():
     if SIZE_VAL_DATASET is not None:
         val_dataset = torch.utils.data.Subset(dataset=val_dataset, 
                         indices=np.random.choice(
-                            a=np.arange(len(train_dataset)), 
+                            a=np.arange(len(val_dataset)), 
                             size=SIZE_VAL_DATASET, 
                             replace=False))
         

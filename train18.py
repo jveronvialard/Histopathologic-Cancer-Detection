@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun  1 02:10:16 2020
-
-@author: JulienVeronVialard
-"""
-
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -14,7 +6,7 @@ import torch.nn.functional as F
 import torchvision.transforms as transforms
 import numpy as np
 from utils import PCamDataset
-from resnet_binary_classifier import Resnet_Binary_Classifier, Resnet_Binary_Classifier_Sequential_Unfreeze
+from resnet_binary_classifier import Resnet18_Binary_Classifier
 import os
 
 from torch.utils.tensorboard import SummaryWriter
@@ -24,8 +16,6 @@ from tqdm import tqdm
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
-
-
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
 LEARNING_RATE = 5e-3
@@ -41,8 +31,8 @@ L2_WD = 1e-5
 
 # TENSORBOARD SETUP
 save_dir = "./save/"
-SAVE_MODEL_PATH = save_dir + "train_resnet_sequential_unfreeze_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
-name = "train_resnet_sequential_unfreeze_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+SAVE_MODEL_PATH = save_dir + "train_resnet18_linear_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+name = "train_resnet18_linear_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
 writer = SummaryWriter(save_dir+name)
 
 # DEVICE SETUP
@@ -79,20 +69,19 @@ def main():
     if SIZE_VAL_DATASET is not None:
         val_dataset = torch.utils.data.Subset(dataset=val_dataset, 
                         indices=np.random.choice(
-                            a=np.arange(len(val_dataset)), 
+                            a=np.arange(len(train_dataset)), 
                             size=SIZE_VAL_DATASET, 
                             replace=False))
         
     loader_train = DataLoader(train_dataset, 
                           batch_size=BATCH_SIZE, 
                           shuffle=True)
-
     
     loader_val = DataLoader(val_dataset, 
                         batch_size=BATCH_SIZE, 
                         shuffle=True)
     
-    model = Resnet_Binary_Classifier_Sequential_Unfreeze()
+    model = Resnet18_Binary_Classifier()
     
     if device.type == 'cuda':
         model.cuda()
@@ -149,8 +138,7 @@ def main():
                             best_val_loss = loss_val
                             torch.save(model, SAVE_MODEL_PATH)
                             print('Save best model at iteration {} with dev loss: {}'.format(walltime, best_val_loss))                    
-        
-                
+                        
         model.eval() # set model to evaluation mode
         with torch.no_grad():
             num_correct = 0

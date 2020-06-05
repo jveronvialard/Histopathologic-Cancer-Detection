@@ -17,7 +17,7 @@ from heapq import nlargest, nsmallest
 from utils import PCamDataset
 
 
-SAVE_MODEL_PATH = "./save/train_resnet18_sequential_unfreeze_best20200604T102208"
+SAVE_MODEL_PATH = "/save/train_resnet_sequential_unfreeze_best20200604T175157"
 
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
@@ -26,7 +26,7 @@ ROOT_DIR = os.getcwd().replace("\\", "/")
 # DATASET
 BATCH_SIZE = 8 #  To train on small dataset
 EVALUATE_EVERY = 4 #  To train on small dataset
-SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 16 #  To train on small dataset
+SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 16, 128 #  To train on small dataset
 #BATCH_SIZE = 256
 # EVALUATE_EVERY = 50000
 #SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = None, None
@@ -102,7 +102,7 @@ def main():
     if SIZE_VAL_DATASET is not None:
         val_dataset = torch.utils.data.Subset(dataset=val_dataset, 
                         indices=np.random.choice(
-                            a=np.arange(len(train_dataset)), 
+                            a=np.arange(len(val_dataset)), 
                             size=SIZE_VAL_DATASET, 
                             replace=False))
         
@@ -115,7 +115,7 @@ def main():
                         batch_size=BATCH_SIZE, 
                         shuffle=True)
     
-    model = torch.load(ROOT_DIR + SAVE_MODEL_PATH.replace('.', ''))
+    model = torch.load(ROOT_DIR + SAVE_MODEL_PATH.replace('.', ''), map_location=torch.device('cpu'))
     model.eval()
     
 
@@ -146,20 +146,24 @@ def main():
     for i in range(n):
         saliency_im = transforms.ToPILImage(mode=None)(saliency[i].reshape(1, 96, 96))
         input_im = transforms.ToPILImage(mode=None)(data_detransform(x[i]))
-        fig = plt.figure(figsize=(1, 2))
-        fig.add_subplot(1, 2, 1)
-        plt.imshow(input_im)
-        plt.axis('off')
-        fig.add_subplot(1, 2, 2)
-        plt.imshow(saliency_im)
-        plt.axis('off')
-        plt.show()
+        #fig = plt.figure(figsize=(1, 2))
+        #fig.add_subplot(1, 2, 1)
+        #plt.imshow(input_im)
+        #plt.axis('off')
+        #fig.add_subplot(1, 2, 2)
+        #plt.imshow(saliency_im)
+        #plt.axis('off')
+        #plt.savefig("./save/image_TP_"+str(i)+".png")
+        #plt.show()
+        input_im.save("./save_image/TP_"+str(i)+"_original_image.png")
+        saliency_im.save("./save_image/TP_"+str(i)+"_saliency_map.png")
+        
 
 
     # False Negative
     mask = y_val
     n = 3
-    tuples = nsmallest(n, enumerate(y_prob*mask), key=lambda x: x[1])
+    tuples = nlargest(n, enumerate((1-y_prob)*mask), key=lambda x: x[1])
 
     X = torch.stack([x_val[idx] for idx, prob in tuples])
     y = torch.stack([y_val[idx] for idx, prob in tuples])
@@ -168,14 +172,18 @@ def main():
     for i in range(n):
         saliency_im = transforms.ToPILImage(mode=None)(saliency[i].reshape(1, 96, 96))
         input_im = transforms.ToPILImage(mode=None)(data_detransform(x[i]))
-        fig = plt.figure(figsize=(1, 2))
-        fig.add_subplot(1, 2, 1)
-        plt.imshow(input_im)
-        plt.axis('off')
-        fig.add_subplot(1, 2, 2)
-        plt.imshow(saliency_im)
-        plt.axis('off')
-        plt.show()        
+#        fig = plt.figure(figsize=(1, 2))
+#        fig.add_subplot(1, 2, 1)
+#        plt.imshow(input_im)
+        #plt.axis('off')
+        #fig.add_subplot(1, 2, 2)
+        #plt.imshow(saliency_im)
+        #plt.axis('off')
+        #plt.savefig("./save/image_FN_"+str(i)+".png")
+        #plt.show()
+        input_im.save("./save_image/FN_"+str(i)+"_original_image.png")
+        saliency_im.save("./save_image/FN_"+str(i)+"_saliency_map.png")
+        
     
     
 
