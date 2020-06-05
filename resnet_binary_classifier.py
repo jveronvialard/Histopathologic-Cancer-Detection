@@ -100,3 +100,18 @@ class Resnet18_Binary_Classifier(nn.Module):
         scores = self.resnet18(x_resized)
         return scores
         
+class Resnet50_Binary_Classifier(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.resize_layer = nn.AdaptiveAvgPool2d((224, 224))
+        self.resnet50 = torchvision.models.resnet50(pretrained=True)
+        # Freeze layers
+        for param in self.resnet50.parameters():
+            param.requires_grad = False
+        self.resnet50.fc = nn.Linear(in_features=2048, out_features=1, bias=True)
+
+    def forward(self, x):
+        x_resized = self.resize_layer(x)
+        scores = self.resnet50(x_resized)
+        return scores
+        
