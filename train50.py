@@ -24,15 +24,15 @@ BATCH_SIZE = 256
 EVALUATE_EVERY = 50000
 #SIZE_TRAIN_DATASET = 64 # To train on small dataset
 #SIZE_VAL_DATASET = 64
-SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 1000, 1000
+SIZE_TRAIN_DATASET, SIZE_VAL_DATASET = 100, 100
 L2_WD = 1e-5
 #LR_SCHEDULER_T_MAX = 10
 #LR_SCHEDULER_ETA_MIN = 1e-5
 
 # TENSORBOARD SETUP
 save_dir = "./save/"
-SAVE_MODEL_PATH = save_dir + "train_resnet18_linear_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
-name = "train_resnet18_linear_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+SAVE_MODEL_PATH = save_dir + "train_resnet50_linear_best" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
+name = "train_resnet50_linear_" + np.datetime64("now").astype(str).replace('-', '').replace(':', '')
 writer = SummaryWriter(save_dir+name)
 
 # DEVICE SETUP
