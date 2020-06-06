@@ -18,7 +18,7 @@ from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
-LEARNING_RATE = 5e-3
+LEARNING_RATE = 3e-3
 NUM_EPOCHS = 30
 BATCH_SIZE = 256
 EVALUATE_EVERY = 50000
