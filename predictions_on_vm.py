@@ -85,9 +85,9 @@ def main():
     with torch.no_grad():
         for t, (x, y) in tqdm(enumerate(loader_test)):
             #print("Iteration {}/{}".format(t, len_dataset//BATCH_SIZE))
-            y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = y.numpy().reshape(len(y))
-            y_hat1[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model1(x).numpy().reshape(len(y))
-            y_hat2[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model2(x).numpy().reshape(len(y))
+            y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = y.cpu().numpy().reshape(len(y))
+            y_hat1[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model1(x).cpu().numpy().reshape(len(y))
+            y_hat2[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model2(x).cpu().numpy().reshape(len(y))
     y_hat1 = 1/(1+np.exp(-y_hat1))
     y_hat2 = 1/(1+np.exp(-y_hat2))
     #np.save("y_test", y_test)
