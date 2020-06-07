@@ -70,7 +70,7 @@ def main():
     
     if device.type == 'cuda':
         model.cuda()
-    
+    """
     y_test = np.zeros(len_dataset)
     y_hat = np.zeros(len_dataset)
 
@@ -83,6 +83,10 @@ def main():
     y_hat = 1/(1+np.exp(-y_hat))
     np.save("y_test", y_test)
     np.save("y_hat_resnet101_unfreeze", y_hat)
+    """
+    
+    y_hat = np.load("y_hat_resnet101_unfreeze.npy")
+    y_test = np.load("y_test.npy")
     
     print("[y_hat]")
     plt.hist(y_hat)
@@ -153,6 +157,6 @@ def main():
     print("The false positive rate is %0.4f" %FPR)
     
 if __name__ == "__main__":
-    main()
-    
+    #main()
+    pass
 
