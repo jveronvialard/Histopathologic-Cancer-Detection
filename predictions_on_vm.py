@@ -83,8 +83,10 @@ def main():
     model1.eval()
     model2.eval()
     with torch.no_grad():
-        for t, (x, y) in tqdm(enumerate(loader_test)):
-            #print("Iteration {}/{}".format(t, len_dataset//BATCH_SIZE))
+        for t, (x, y) in enumerate(loader_test):
+            x = x.to(device=device)  # move to device, e.g. GPU
+            y = y.to(device=device)
+            print("Iteration {}/{}".format(t, len_dataset//BATCH_SIZE))
             y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = y.cpu().numpy().reshape(len(y))
             y_hat1[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model1(x).cpu().numpy().reshape(len(y))
             y_hat2[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model2(x).cpu().numpy().reshape(len(y))
