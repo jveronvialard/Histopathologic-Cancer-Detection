@@ -248,7 +248,74 @@ if __name__ == '__main__':
     grad_cam = GradCam(model=model, feature_module=model.layer4, \
                        target_layer_names=["2"], use_cuda=use_cuda)
     
-    image_path = "./data/all/00afae8ff79fb571372c60dadafca489472cc80c.tif"
+    image_path_list_1 = [
+            "./data/all/12692a63a0c52bf6451154bbb81c6e8ed270c95c.tif",
+            "./data/all/113d8b6f648f5903120c90335d1afe969d25f640.tif",
+            "./data/all/5ceaa95dd3d84eca1789152eca65f70c14cca123.tif",
+            "./data/all/b8f4511597987c01e6c88afde50920304ab210d2.tif",
+            "./data/all/69b22af4d0d0793ecb385582aa90e2ddd8c4bb64.tif"
+            ]
+    
+    for index, image_path in enumerate(image_path_list_1):
+    
+        img = cv2.imread(image_path, 1)
+        img = np.float32(cv2.resize(img, (224, 224))) / 255
+        input = preprocess_image(img)
+    
+        # If None, returns the map for the highest scoring category.
+        # Otherwise, targets the requested index.
+        target_index = None
+        mask = grad_cam(input, target_index)
+    
+        show_cam_on_image(img, mask)
+    
+        gb_model = GuidedBackpropReLUModel(model=model, use_cuda=use_cuda)
+        gb = gb_model(input, index=target_index)
+        gb = gb.transpose((1, 2, 0))
+        cam_mask = cv2.merge([mask, mask, mask])
+        cam_gb = deprocess_image(cam_mask*gb)
+        gb = deprocess_image(gb)
+        
+        cv2.imwrite('img'+str(index)+'.jpg', img)
+        cv2.imwrite('gb'+str(index)+'.jpg', gb)
+        cv2.imwrite('cam_gb'+str(index)+'.jpg', cam_gb)
+    
+"""
+    image_path_list_1 = [
+            "./data/all/12692a63a0c52bf6451154bbb81c6e8ed270c95c.tif",
+            "./data/all/113d8b6f648f5903120c90335d1afe969d25f640.tif",
+            "./data/all/5ceaa95dd3d84eca1789152eca65f70c14cca123.tif",
+            "./data/all/b8f4511597987c01e6c88afde50920304ab210d2.tif",
+            "./data/all/69b22af4d0d0793ecb385582aa90e2ddd8c4bb64.tif"
+            ]
+    
+    for index, image_path in enumerate(image_path_list_1):
+    
+        img = cv2.imread(image_path, 1)
+        img = np.float32(cv2.resize(img, (224, 224))) / 255
+        input = preprocess_image(img)
+    
+        # If None, returns the map for the highest scoring category.
+        # Otherwise, targets the requested index.
+        target_index = None
+        mask = grad_cam(input, target_index)
+    
+        show_cam_on_image(img, mask)
+    
+        gb_model = GuidedBackpropReLUModel(model=model, use_cuda=use_cuda)
+        gb = gb_model(input, index=target_index)
+        gb = gb.transpose((1, 2, 0))
+        cam_mask = cv2.merge([mask, mask, mask])
+        cam_gb = deprocess_image(cam_mask*gb)
+        gb = deprocess_image(gb)
+        
+        cv2.imwrite('img'+str(index)+'.jpg', img)
+        cv2.imwrite('gb'+str(index)+'.jpg', gb)
+        cv2.imwrite('cam_gb'+str(index)+'.jpg', cam_gb)
+"""
+
+"""
+    image_path = "./data/all/12692a63a0c52bf6451154bbb81c6e8ed270c95c.tif"
     
     img = cv2.imread(image_path, 1)
     img = np.float32(cv2.resize(img, (224, 224))) / 255
@@ -262,7 +329,6 @@ if __name__ == '__main__':
     show_cam_on_image(img, mask)
 
     gb_model = GuidedBackpropReLUModel(model=model, use_cuda=use_cuda)
-    print(model._modules.items())
     gb = gb_model(input, index=target_index)
     gb = gb.transpose((1, 2, 0))
     cam_mask = cv2.merge([mask, mask, mask])
@@ -271,3 +337,4 @@ if __name__ == '__main__':
 
     cv2.imwrite('gb.jpg', gb)
     cv2.imwrite('cam_gb.jpg', cam_gb)
+"""
