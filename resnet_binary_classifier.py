@@ -1,4 +1,4 @@
-#import torch
+import torch
 import torch.nn as nn
 #import torch.optim as optim
 #from torch.utils.data import DataLoader
@@ -114,4 +114,24 @@ class Resnet50_Binary_Classifier(nn.Module):
         x_resized = self.resize_layer(x)
         scores = self.resnet50(x_resized)
         return scores
-        
+    
+    
+class Ensemble(nn.Module):
+    def __init__(self, models):
+        # models is a list of models: please pass directly model.resnetXX in that list
+        super().__init__()
+        self.models = models
+        out_features = 0
+        for model in self.models:
+            out_features += model.fc.in_features
+            model.fc = nn.Identity()
+            
+        self.classifier = nn.Linear(out_features, 1)
+                    
+    def forward(self, x):
+        features = []
+        for model in self.models:
+            model_features = model(x.clone())
+            features.append(model_features)
+        return self.classifier(torch.cat(features, dim=1))
+
