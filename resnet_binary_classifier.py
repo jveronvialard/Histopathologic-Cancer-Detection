@@ -125,6 +125,8 @@ class Ensemble(nn.Module):
         for model in self.models:
             out_features += model.fc.in_features
             model.fc = nn.Identity()
+            for param in model.parameters():
+                param.requires_grad = False
             
         self.classifier = nn.Linear(out_features, 1)
                     
