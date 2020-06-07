@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 
 
 ROOT_DIR = os.getcwd().replace("\\", "/")
-BATCH_SIZE = 1
+BATCH_SIZE = 128
 
 save_dir = "./save/"
 SAVE_MODEL_PATH = save_dir + "train_resnet_sequential_unfreeze_best20200604T175157"
@@ -79,5 +79,4 @@ def main():
     np.save("y_hat_resnet101_unfreeze", y_hat)
         
 if __name__ == "__main__":
-    pass
-    #main()
+    main()
