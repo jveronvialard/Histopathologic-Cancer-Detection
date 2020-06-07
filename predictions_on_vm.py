@@ -171,6 +171,5 @@ def main():
     print("The false positive rate is %0.4f" %FPR)
     """
 if __name__ == "__main__":
-    #main()
-    pass
+    main()
 
