@@ -35,7 +35,7 @@ BATCH_SIZE = 128
 
 save_dir = "./save/"
 SAVE_MODEL_PATH1 = save_dir + "train_resnet_sequential_unfreeze_best20200604T175157"
-SAVE_MODEL_PATH2 = save_dir + "train_resnet50_linear_20200607T084107"
+SAVE_MODEL_PATH2 = save_dir + "train_resnet50_linear_best20200607T084107"
 
 # DEVICE SETUP
 USE_GPU = True
@@ -70,7 +70,7 @@ def main():
         model2 = torch.load(SAVE_MODEL_PATH2, map_location=torch.device('cpu'))
     else:
         model1 = torch.load(SAVE_MODEL_PATH1)
-        model1 = torch.load(SAVE_MODEL_PATH2)
+        model2 = torch.load(SAVE_MODEL_PATH2)
     
     if device.type == 'cuda':
         model1.cuda()
