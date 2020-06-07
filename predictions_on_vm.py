@@ -92,9 +92,9 @@ def main():
             y_hat2[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model2(x).cpu().numpy().reshape(len(y))
     y_hat1 = 1/(1+np.exp(-y_hat1))
     y_hat2 = 1/(1+np.exp(-y_hat2))
-    #np.save("y_test", y_test)
-    #np.save("y_hat_resnet101_unfreeze", y_hat1)
-    #np.save("y_hat_resnet50", y_hat2)
+    np.save("y_test", y_test)
+    np.save("y_hat_resnet101_unfreeze", y_hat1)
+    np.save("y_hat_resnet50", y_hat2)
 
     """
     print("[y_hat]")
