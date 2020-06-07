@@ -34,7 +34,8 @@ ROOT_DIR = os.getcwd().replace("\\", "/")
 BATCH_SIZE = 128
 
 save_dir = "./save/"
-SAVE_MODEL_PATH = save_dir + "train_resnet_sequential_unfreeze_best20200604T175157"
+SAVE_MODEL_PATH1 = save_dir + "train_resnet_sequential_unfreeze_best20200604T175157"
+SAVE_MODEL_PATH2 = save_dir + "train_resnet50_linear_20200607T084107"
 
 # DEVICE SETUP
 USE_GPU = True
@@ -65,40 +66,52 @@ def main():
     len_dataset = test_dataset.__len__()
 
     if device.type == 'cpu':
-        model = torch.load(SAVE_MODEL_PATH, map_location=torch.device('cpu'))
+        model1 = torch.load(SAVE_MODEL_PATH1, map_location=torch.device('cpu'))
+        model2 = torch.load(SAVE_MODEL_PATH2, map_location=torch.device('cpu'))
     else:
-        model = torch.load(SAVE_MODEL_PATH)
+        model1 = torch.load(SAVE_MODEL_PATH1)
+        model1 = torch.load(SAVE_MODEL_PATH2)
     
     if device.type == 'cuda':
-        model.cuda()
-    """
-    y_test = np.zeros(len_dataset)
-    y_hat = np.zeros(len_dataset)
+        model1.cuda()
+        model2.cuda()
 
-    model.eval()
+    y_test = np.zeros(len_dataset)
+    y_hat1 = np.zeros(len_dataset)
+    y_hat2 = np.zeros(len_dataset)
+
+    model1.eval()
+    model2.eval()
     with torch.no_grad():
         for t, (x, y) in tqdm(enumerate(loader_test)):
             #print("Iteration {}/{}".format(t, len_dataset//BATCH_SIZE))
             y_test[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = y.numpy().reshape(len(y))
-            y_hat[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model(x).numpy().reshape(len(y))
-    y_hat = 1/(1+np.exp(-y_hat))
+            y_hat1[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model1(x).numpy().reshape(len(y))
+            y_hat2[t*BATCH_SIZE:min((t+1)*BATCH_SIZE, len_dataset)] = model2(x).numpy().reshape(len(y))
+    y_hat1 = 1/(1+np.exp(-y_hat1))
+    y_hat2 = 1/(1+np.exp(-y_hat2))
     np.save("y_test", y_test)
-    np.save("y_hat_resnet101_unfreeze", y_hat)
+    np.save("y_hat_resnet101_unfreeze", y_hat1)
+    np.save("y_hat_resnet50", y_hat2)
+
     """
-    
-    y_hat = np.load("y_hat_resnet101_unfreeze.npy")
-    y_test = np.load("y_test.npy")
-    
     print("[y_hat]")
     plt.hist(y_hat)
     plt.title("Repartition of y_hat")
     plt.savefig("y_hat")
-    plt.show()
-    
+    #plt.show()
+    """
     
     indices_0 = np.where(y_test==0)
     indices_1 = np.where(y_test==1)
     
+    y_pred_1 = (y_hat1>.5).astype(float)
+    y_pred_2 = (y_hat2>.5).astype(float)
+    
+    print("Accuracy 1: {}".format(np.mean(y_test==y_pred_1)))
+    print("Accuracy 2: {}".format(np.mean(y_test==y_pred_2)))
+    
+    """
     print("[ROC]")
     fpr, tpr, ROC_thresholds = roc_curve(y_test, y_hat)
     roc_auc = auc(fpr, tpr)
@@ -114,7 +127,7 @@ def main():
     plt.title('ROC')
     plt.legend(loc="lower right")
     plt.savefig("ROC curve")
-    plt.show()
+    #plt.show()
     distances = fpr**2 + (1-tpr)**2
     ROC_optimal_threshold = ROC_thresholds[distances.argmin()]
     print("The optimal threshold for ROC optimization is %0.3f" %ROC_optimal_threshold)
@@ -130,7 +143,7 @@ def main():
     plt.ylabel("True label")
     plt.title("Normalized prediction matrix")
     plt.savefig("Confusion matrix")
-    plt.show()
+    #plt.show()
     
     print("[PRECISION-RECALL]")
     precision, recall, PR_thresholds = precision_recall_curve(y_test, y_hat)
@@ -147,7 +160,7 @@ def main():
     plt.title('Precision Recall Curve')
     plt.legend(loc="lower right")
     plt.savefig("PR curve")
-    plt.show()
+    #plt.show()
     distances = (1-precision)**2 + (1-recall)**2
     PR_optimal_threshold = PR_thresholds[distances.argmin()]
     print("The optimal threshold for precision-recall optimization is %0.3f" %PR_optimal_threshold)
@@ -156,7 +169,7 @@ def main():
     FNR = np.sum(1-y_pred_PR[indices_1[0]])/len(indices_1[0])
     print("The false negative rate is %0.4f" %FNR)
     print("The false positive rate is %0.4f" %FPR)
-    
+    """
 if __name__ == "__main__":
     #main()
     pass
