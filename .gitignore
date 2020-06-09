@@ -8,5 +8,4 @@ __pycache__/
 jupyter_venv.txt
 *.zip
 *.npy
-train_small_svm_clf.py
 save/

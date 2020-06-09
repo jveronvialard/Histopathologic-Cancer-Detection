@@ -75,13 +75,19 @@ def main():
     
     print("[y_hat]")
     plt.hist(y_hat)
-    plt.title("Repartition of y_hat")
+    plt.title("Distribution of y_hat")
     plt.savefig("y_hat")
-    plt.show()
-    
+    plt.show()    
     
     indices_0 = np.where(y_test==0)
     indices_1 = np.where(y_test==1)
+    
+    plt.hist(y_hat[indices_0], bins=100, color='green', label='No tumor')
+    plt.hist(y_hat[indices_1], bins=100, color='red', label='Tumor')
+    plt.title("Distribution of predictions for Classes 0 and 1")
+    plt.legend()
+    plt.savefig("y_hat_0_1")
+    plt.show()
     
     print("[ROC]")
     fpr, tpr, ROC_thresholds = roc_curve(y_test, y_hat)
@@ -108,12 +114,12 @@ def main():
     print("The false negative rate is %0.4f" %FNR)
     print("The false positive rate is %0.4f" %FPR)
     matrix = confusion_matrix(y_true=y_test, y_pred=y_pred_ROC)
-    matrix = matrix/matrix.sum(axis=1)
+    matrix = matrix/matrix.sum(axis=1).reshape((2, 1))
     sn.heatmap(matrix, annot=True)
     plt.xlabel("Predicted label")
     plt.ylabel("True label")
-    plt.title("Normalized prediction matrix")
-    plt.savefig("Confusion matrix")
+    plt.title("Normalized confusion matrix")
+    plt.savefig("confusion_matrix.png")
     plt.show()
     
     print("[PRECISION-RECALL]")
@@ -142,6 +148,6 @@ def main():
     print("The false positive rate is %0.4f" %FPR)
     
 if __name__ == "__main__":
-    #main()
-    pass
+    main()
+    #pass
 
