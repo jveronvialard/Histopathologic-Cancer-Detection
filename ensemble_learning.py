@@ -1,15 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  7 03:23:47 2020
-
-@author: JulienVeronVialard
-"""
-
 import torch
-import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
 import torchvision.transforms as transforms
 import numpy as np
 from utils import PCamDataset
@@ -21,7 +12,6 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
 
 ROOT_DIR = os.getcwd().replace("\\", "/")

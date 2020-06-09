@@ -1,22 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun  4 06:13:34 2020
-
-@author: JulienVeronVialard
-"""
-
-
-import torchvision.transforms as transforms
-
 from io import BytesIO
+import os
+import numpy as np
+from PIL import Image
 
 
 import torch
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
-
-import os
-import numpy as np
+import torchvision.transforms as transforms
 
 
 from utils import PCamDataset

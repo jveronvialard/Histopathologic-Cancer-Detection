@@ -1,12 +1,9 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
 import torchvision.transforms as transforms
 import numpy as np
 from utils import PCamDataset
-from resnet_binary_classifier import Resnet_Binary_Classifier, Resnet_to_2048
+from resnet_binary_classifier import Resnet_to_2048
 import os
 
 ROOT_DIR = os.getcwd().replace("\\", "/")

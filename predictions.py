@@ -1,32 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun  1 02:10:16 2020
-
-@author: JulienVeronVialard
-"""
-
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
 import torchvision.transforms as transforms
 import numpy as np
 from utils import PCamDataset
-from resnet_binary_classifier import Resnet_Binary_Classifier, Resnet_Binary_Classifier_Sequential_Unfreeze
 import os
 
-from tqdm import tqdm
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import roc_auc_score
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import log_loss
 import matplotlib.pyplot as plt
 import seaborn as sn
-import pandas as pd
 
 
 

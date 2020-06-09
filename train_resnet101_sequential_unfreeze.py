@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun  1 02:10:16 2020
-
-@author: JulienVeronVialard
-"""
-
-
 import torch
 import torch.nn as nn
 import torch.optim as optim

@@ -1,18 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun  4 05:05:15 2020
-
-@author: JulienVeronVialard
-"""
-
 import torch
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-from heapq import nlargest, nsmallest
+from heapq import nlargest
 
 from utils import PCamDataset
 
@@ -146,15 +138,6 @@ def main():
     for i in range(n):
         saliency_im = transforms.ToPILImage(mode=None)(saliency[i].reshape(1, 96, 96))
         input_im = transforms.ToPILImage(mode=None)(data_detransform(x[i]))
-        #fig = plt.figure(figsize=(1, 2))
-        #fig.add_subplot(1, 2, 1)
-        #plt.imshow(input_im)
-        #plt.axis('off')
-        #fig.add_subplot(1, 2, 2)
-        #plt.imshow(saliency_im)
-        #plt.axis('off')
-        #plt.savefig("./save/image_TP_"+str(i)+".png")
-        #plt.show()
         input_im.save("./save_image/TP_"+str(i)+"_original_image.png")
         saliency_im.save("./save_image/TP_"+str(i)+"_saliency_map.png")
         
@@ -172,15 +155,6 @@ def main():
     for i in range(n):
         saliency_im = transforms.ToPILImage(mode=None)(saliency[i].reshape(1, 96, 96))
         input_im = transforms.ToPILImage(mode=None)(data_detransform(x[i]))
-#        fig = plt.figure(figsize=(1, 2))
-#        fig.add_subplot(1, 2, 1)
-#        plt.imshow(input_im)
-        #plt.axis('off')
-        #fig.add_subplot(1, 2, 2)
-        #plt.imshow(saliency_im)
-        #plt.axis('off')
-        #plt.savefig("./save/image_FN_"+str(i)+".png")
-        #plt.show()
         input_im.save("./save_image/FN_"+str(i)+"_original_image.png")
         saliency_im.save("./save_image/FN_"+str(i)+"_saliency_map.png")
         

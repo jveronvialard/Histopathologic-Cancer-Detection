@@ -1,9 +1,11 @@
+# Adapted from https://github.com/jacobgil/pytorch-grad-cam
+
 import argparse
 import cv2
 import numpy as np
 import torch
 from torch.autograd import Function
-from torchvision import models
+
 
 class FeatureExtractor():
     """ Class for extracting activations and 
